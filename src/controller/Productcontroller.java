@@ -111,7 +111,7 @@ public class Productcontroller {
 
     @RequestMapping(value = "/search.action")
     @ResponseBody
-    public List<Product> search(User user) {
+    public List<Product> search(User user1) {
 
         List<Product> list = new ArrayList<>();
         list.add(new Product(1, "phone", 20.0f, new Date(), "test"));
