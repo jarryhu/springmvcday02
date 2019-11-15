@@ -1,5 +1,8 @@
 package pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 public class Product {
@@ -7,6 +10,7 @@ public class Product {
     private Integer id;
     private String name;
     private Float price;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date creatTime;
     private String detail;
 
@@ -42,7 +46,6 @@ public class Product {
     public void setPrice(Float price) {
         this.price = price;
     }
-
     public Date getCreatTime() {
         return creatTime;
     }

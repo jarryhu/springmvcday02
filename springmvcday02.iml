@@ -345,7 +345,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library" scope="TEST">
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="jar://E:/hukun/java_web/web/hukun/springmvc/springmvc/springmvc-01/jar包/springmvc加入json支持/jackson-core-2.4.2.jar!/" />

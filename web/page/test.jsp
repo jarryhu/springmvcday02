@@ -20,7 +20,9 @@
         console.log(username.val())
         username.on("blur", function () {
             $.ajax({
-                url: "<%=request.getContextPath()%>/registerCheck.action?name=" + username.val(),
+                url: "<%=request.getContextPath()%>/check.action",
+                data: "name=" + username.val(),
+                dateType: "text",
                 type: "post",
                 success: function (d) {
                     if (d.length > 0) {

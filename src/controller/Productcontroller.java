@@ -92,7 +92,7 @@ public class Productcontroller {
 
     }
 
-    @RequestMapping("/registerCheck.action")
+    @RequestMapping("/check.action")
     @ResponseBody
     public String checkName(String name) {
         int i = userDao.checkUserName(name);
@@ -103,21 +103,27 @@ public class Productcontroller {
         }
     }
 
-    @RequestMapping("/registerPage.action")
-    public String registerPage(String name) {
+    @RequestMapping("/searchPage.action")
+    public String registerPage() {
 
         return "search";
     }
 
+    @RequestMapping("/checkPage.action")
+    public String checkPage() {
+        return "test";
+    }
 
-    @RequestMapping(value = "/search.action")
-    @ResponseBody
-    public List<Product> search(User user1) {
+
+    @RequestMapping(value = "/search.action", method = RequestMethod.POST)
+
+    public @ResponseBody
+    List<Product> search(@RequestBody User user1) {
 
         List<Product> list = new ArrayList<>();
         list.add(new Product(1, "phone", 20.0f, new Date(), "test"));
         list.add(new Product(1, "phone", 20.0f, new Date(), "test"));
-        list.add(new Product(1, "phone", 20.0f, new Date(), "test"));
+        list.add(new Product(1, "手机", 20.0f, new Date(), "test"));
         return list;
 
     }

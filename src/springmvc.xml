@@ -17,14 +17,21 @@
 
     <!--    //注解驱动的方式 把最新的處理器映射器和處理器適配器放到spring容器中-->
 
-    <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" >
-        <mvc:message-converters register-defaults="true">
+    <mvc:annotation-driven>
+        <mvc:message-converters>
             <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-                <property name="supportedMediaTypes">
-                    <list><value>text/html;charset=UTF-8</value></list>
+                <property name="objectMapper">
+                    <bean class="com.fasterxml.jackson.databind.ObjectMapper">
+                        <property name="dateFormat">
+                            <bean class="java.text.SimpleDateFormat">
+                                <constructor-arg type="java.lang.String" value="yyyy-MM-dd"/>
+                            </bean>
+                        </property>
+                    </bean>
                 </property>
             </bean>
         </mvc:message-converters>
+
     </mvc:annotation-driven>
 
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -32,12 +39,13 @@
         <property name="suffix" value=".jsp"></property>
     </bean>
 
+
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
             <mvc:exclude-mapping path="/login*.action"/>
-            <mvc:exclude-mapping path="/register*.action"/>
-            <mvc:exclude-mapping path="/search.action"/>
+            <mvc:exclude-mapping path="/search*.action"/>
+            <mvc:exclude-mapping path="/check*.action"/>
             <bean class="interceptor.LoginInterceptor"></bean>
         </mvc:interceptor>
 
@@ -49,10 +57,6 @@
     <bean name="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <property name="maxUploadSize" value="5000000"></property>
     </bean>
-
-    <bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"></bean>
-
-
 
 
 </beans>

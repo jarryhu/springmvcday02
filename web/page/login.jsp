@@ -18,17 +18,22 @@
     <input name="user_name">
     <input name="user_password">
     <input type="submit" value="登录">
-    <input type="button" value="注册">
-
+    <input type="button" name="check" value="check">
+    <input type="button" name="json" value="json">
 </form>
 <script type="text/javascript">
 
     $(function () {
 
-        var register = $("input[type=button]");
-        register.on("click", function () {
+        var json = $("input[name=json]");
+        json.on("click", function () {
 
-            location.href = "<%=request.getContextPath()%>/registerPage.action"
+            location.href = "<%=request.getContextPath()%>/searchPage.action"
+        })
+        var check = $("input[name=check]");
+        check.on("click", function () {
+
+            location.href = "<%=request.getContextPath()%>/checkPage.action"
         })
 
     })
