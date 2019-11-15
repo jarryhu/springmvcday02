@@ -79,13 +79,14 @@ public class Productcontroller {
     }
 
     @RequestMapping("/update.action")
-
+    //这是我做的 李证奇 谁都别动
     public String update(User user, MultipartFile pictureFile) throws IOException {
         String filename = UUID.randomUUID().toString().replaceAll("-", "");
         String extension = FilenameUtils.getExtension(pictureFile.getOriginalFilename());
         filename = filename + "." + extension;
         pictureFile.transferTo(new File("D:\\upload\\" + filename));
         user.setHeadpath(filename);
+
         int updatehead = userDao.updatehead(user);
         return "redirect:/userList.action";
 
