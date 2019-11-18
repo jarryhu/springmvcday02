@@ -128,4 +128,22 @@ public class Productcontroller {
 
     }
 
+
+    @RequestMapping(value="/searchUserAjax.action")
+    @ResponseBody
+    public List<User> searchUserAjax(@RequestBody User user) {
+        List<User> users = userDao.searchByWhere(user);
+        return users;
+
+
+    }
+
+    @RequestMapping("/searchUserAjaxPage.action")
+
+    public String searchUserAjaxPage() {
+        return "userSearch";
+
+    }
+
+
 }

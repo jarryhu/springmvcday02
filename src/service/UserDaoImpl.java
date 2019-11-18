@@ -39,5 +39,15 @@ public class UserDaoImpl implements UserDao {
         return userMapper.checkUserName(name);
     }
 
+    @Override
+    public List<User> searchByWhere(User user) {
+        return userMapper.searchByWhere(user);
+    }
+
+    @Override
+    public List<User> search(User user) {
+        return userMapper.search(user);
+    }
+
 
 }

@@ -5,7 +5,7 @@
          version="4.0">
 
     <welcome-file-list>
-        <welcome-file>loginPage.action</welcome-file>
+        <welcome-file>searchUserAjaxPage.action</welcome-file>
     </welcome-file-list>
 
 
