@@ -29,6 +29,7 @@
             <td>${item.user_major}</td>
             <td><img src="/pic/${item.headpath}" width="100" height="100"></td>
             <td><a href="#">编辑</a></td>
+            <td><a href="#">外派</a></td>
         </tr>
     </c:forEach>
 
@@ -49,7 +50,6 @@
 
         var a = $("a");
         a.on("click", function () {
-
             for (var i = 0; i < a.length; i++) {
                 var id = $(this)[i].parentNode.parentNode.children[0].innerHTML;
                 console.log(id);

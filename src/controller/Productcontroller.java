@@ -11,9 +11,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import pojo.Product;
-import pojo.QueryVo;
-import pojo.User;
+import pojo.*;
+
+import service.BookDao;
 import service.UserDao;
 
 import javax.servlet.http.HttpServletRequest;
@@ -129,7 +129,7 @@ public class Productcontroller {
     }
 
 
-    @RequestMapping(value="/searchUserAjax.action")
+    @RequestMapping(value = "/searchUserAjax.action")
     @ResponseBody
     public List<User> searchUserAjax(@RequestBody User user) {
         List<User> users = userDao.searchByWhere(user);
@@ -143,6 +143,25 @@ public class Productcontroller {
     public String searchUserAjaxPage() {
         return "userSearch";
 
+    }
+
+    @Autowired
+    BookDao bookDao;
+
+    @RequestMapping("borrowBook.action")
+    public String borrowBook(Model model) {
+        List<Book> books = bookDao.borrowBookList();
+        model.addAttribute("books", books);
+        return "bookList";
+    }
+
+    @RequestMapping("borrow.action")
+    public String borrow(BorrowBookUser b) {
+        HttpSession session = reqeust.getSession();
+        User user = (User) session.getAttribute("user");
+        b.setUserid(user.getUser_id());
+        bookDao.borrow(b);
+        return "redirect:borrowBook.action";
     }
 
 

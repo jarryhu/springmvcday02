@@ -7,9 +7,7 @@
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd
-       http://www.springframework.org/schema/tool
-       http://www.springframework.org/schema/tool/spring-tool.xsd
-      http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc
        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
 
@@ -44,8 +42,9 @@
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
             <mvc:exclude-mapping path="/login*.action"/>
-            <mvc:exclude-mapping path="/search*.action"/>
+
             <mvc:exclude-mapping path="/check*.action"/>
+
             <bean class="interceptor.LoginInterceptor"></bean>
         </mvc:interceptor>
 
@@ -54,7 +53,8 @@
 
     <bean class="exception.MyExceptionResollver"></bean>
     <!-- 配置文件解析器-->
-    <bean name="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    <bean name="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <property name="maxUploadSize" value="5000000"></property>
     </bean>
 
