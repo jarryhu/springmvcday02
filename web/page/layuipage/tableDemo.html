@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/springmvcday02/page/layui/css/layui.css" media="all">
+    <script src="/springmvcday02/page/layui/layui.all.js"></script>
+</head>
+<body>
+<table id="demo" lay-filter="test"></table>
+
+
+<script>
+    layui.use('table', function () {
+        var table = layui.table;
+
+//第一个实例 render  渲染
+        table.render({
+            elem: '#demo',
+            url: "/springmvcday02/selectLayUitable_Page.action",
+
+            cols: [[
+                {type: 'checkbox', fixed: 'left'},
+                {field: 'user_id', title: 'ID', width: 80, fixed: 'left'}
+                , {field: 'user_name', title: '用户名', width: 80, fixed: 'right'}
+                , {field: 'user_age', title: '年龄', width: 80}
+                , {field: 'user_major', title: '专业', width: 80}
+                , {field: 'user_password', title: '密码', width: 177}
+                , {field: 'address', title: '地址', width: 80}
+                , {field: 'headpath', title: '头像', width: 80}
+            ]],//表头
+            page: true,
+
+        })
+    })
+</script>
+</body>
+</html>

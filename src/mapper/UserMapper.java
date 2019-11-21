@@ -2,6 +2,7 @@ package mapper;
 
 import pojo.User;
 
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -9,7 +10,7 @@ public interface UserMapper {
 
     public User login(User user);
 
-    public List<User> getUserList();
+    public List<User> getUserList(HashMap map);
 
     public User getUserByid(int id);
 
@@ -20,5 +21,11 @@ public interface UserMapper {
     public List<User> searchByWhere(User user);
 
     public List<User> search(User user);
+
+    public Integer userCount();
+
+    public List<User> selectLayUitable();
+
+    public List<User> selectpage(HashMap map);
 
 }

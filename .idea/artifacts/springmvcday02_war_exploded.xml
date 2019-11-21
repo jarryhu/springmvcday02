@@ -44,6 +44,13 @@
           <element id="file-copy" path="E:/hukun/java_web/web/hukun/springmvc/springmvc/springmvc-01/jar包/springmvc加入json支持/jackson-annotations-2.4.0.jar" />
           <element id="file-copy" path="E:/hukun/java_web/web/hukun/springmvc/springmvc/springmvc-01/jar包/springmvc加入json支持/jackson-core-2.4.2.jar" />
           <element id="file-copy" path="E:/hukun/java_web/web/hukun/springmvc/springmvc/springmvc-01/jar包/springmvc加入json支持/jackson-databind-2.4.2.jar" />
+          <element id="file-copy" path="E:/tool/servlet-jar/json/commons-beanutils-1.9.3.jar" />
+          <element id="file-copy" path="E:/tool/servlet-jar/json/commons-collections-3.2.1.jar" />
+          <element id="file-copy" path="E:/tool/servlet-jar/json/commons-lang-2.6.jar" />
+          <element id="file-copy" path="E:/tool/servlet-jar/json/commons-logging-1.1.1.jar" />
+          <element id="file-copy" path="E:/tool/servlet-jar/json/ezmorph-1.0.6.jar" />
+          <element id="file-copy" path="E:/tool/servlet-jar/json/json-20070829.jar" />
+          <element id="file-copy" path="E:/tool/servlet-jar/json/json-lib-2.1-jdk13.jar/json-lib-2.1-jdk13.jar" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="springmvcday02/web/Web" />

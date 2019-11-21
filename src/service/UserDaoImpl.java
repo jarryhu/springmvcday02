@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import pojo.User;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -19,9 +20,10 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> getUserList() {
-        return userMapper.getUserList();
+    public List<User> getUserList(HashMap map) {
+        return userMapper.getUserList(map);
     }
+
 
     @Override
     public User getUserByid(int id) {
@@ -47,6 +49,21 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<User> search(User user) {
         return userMapper.search(user);
+    }
+
+    @Override
+    public Integer userCount() {
+        return userMapper.userCount();
+    }
+
+    @Override
+    public List<User> selectLayUitable() {
+        return userMapper.selectLayUitable();
+    }
+
+    @Override
+    public List<User> selectpage(HashMap map) {
+        return userMapper.selectpage(map);
     }
 
 

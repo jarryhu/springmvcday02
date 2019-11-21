@@ -5,6 +5,8 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import exception.ParamErrorException;
 import org.apache.commons.io.FilenameUtils;
+
+import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,27 +22,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 @Controller
 public class Productcontroller {
 
-    @RequestMapping("/userList.action")
-    public String getUserList(@RequestParam(required = false, defaultValue = "1", value = "page") int page, Model model) {
-        System.out.println("Productcontroller>>>productList.action");
 
-        //首先是设置第几页，第二各参数是每页的记录数
-        PageHelper.startPage(page, 4);
-        List<User> userList = userDao.getUserList();
-        PageInfo pageInfo = new PageInfo(userList);
-
-        model.addAttribute("pageInfo", pageInfo);
-        return "userlist";
-    }
 
     @RequestMapping("/loginPage.action")
     public String loginPage() {
@@ -67,6 +55,29 @@ public class Productcontroller {
             model.addAttribute("msg", "用户名密码错误");
             return "login";
         }
+    }
+
+    @RequestMapping("/loginTest.action")
+    @ResponseBody
+    public int loginTest(@RequestBody User user, Model model) {
+        //  model view controller
+
+        HttpSession session = reqeust.getSession();
+        User loginUser = userDao.Login(user);
+        if (loginUser != null) {
+            //重定向
+            session.setAttribute("user", loginUser);
+            return 1;
+        } else {
+            model.addAttribute("msg", "用户名密码错误");
+            return 0;
+        }
+    }
+
+
+    @RequestMapping("goListPage.action")
+    public String goListPage() {
+        return "layuipage/list.html";
     }
 
     @RequestMapping("getUserByid.action")
@@ -163,6 +174,8 @@ public class Productcontroller {
         bookDao.borrow(b);
         return "redirect:borrowBook.action";
     }
+
+
 
 
 }

@@ -31,8 +31,8 @@
     <select id="login" parameterType="user" resultMap="usermap">
         select * from user where name=#{user_name} and password=#{user_password}
     </select>
-    <select id="getUserList" resultMap="usermap">
-        select * from user
+    <select id="getUserList" parameterType="hashmap" resultMap="usermap">
+        select * from user limit #{pagestart}, #{pagesize}
     </select>
     <select id="getUserByid" parameterType="java.lang.Integer" resultMap="usermap">
         <include refid="s"/>
@@ -59,7 +59,22 @@
         </where>
     </select>
 
+
+    <select id="selectLayUitable" resultMap="usermap">
+        select  * from user;
+    </select>
+
     <sql id="s">
             select * from user
     </sql>
+
+
+    <select id="userCount" resultType="integer">
+        select count(*) from user
+    </select>
+
+
+    <select id="selectpage" parameterType="hashmap" resultMap="usermap">
+        SELECT * FROM USER LIMIT #{pagestart},#{size}
+    </select>
 </mapper>
