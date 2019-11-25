@@ -10,23 +10,24 @@
     <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
 </head>
 <body>
-
+<script src="/springmvcday02/page/jquery/jquery-3.4.1.min.js"></script>
 <table class="layui-hide" id="demo" lay-filter="test"></table>
 
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
         <button class="layui-btn layui-btn-sm" id="btn-add" lay-event="add">添加</button>
-        <button class="layui-btn layui-btn-sm" lay-event="delete">删除</button>
+        <button class="layui-btn layui-btn-sm delAll_btn" lay-event="delete">批量删除</button>
         <button class="layui-btn layui-btn-sm" lay-event="update">编辑</button>
     </div>
 </script>
 
 
 <script type="text/html" id="barDemo">
+
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs " lay-event="del">删除</a>
 </script>
 
 
@@ -65,8 +66,7 @@
     <form class="layui-form" lay-filter="update-form">
         <div class="layui-input-block ">
             <input type="hidden" name="user_id"
-                   id="id"
-            >
+                   id="id">
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">姓名</label>
@@ -113,26 +113,33 @@
             </div>
         </div>
     </form>
+
+
 </script>
 <script>
-    layui.use(['laydate', 'layer', 'jquery', 'table', 'form'], function () {
+
+    layui.use(['laydate', 'layer', 'jquery', 'table', 'form', "upload", "element"], function () {
         var laydate = layui.laydate //日期
             , layer = layui.layer //弹层
             , table = layui.table //表格
             , form = layui.form //滑块
+            , upload = layui.upload
+            , element = layui.element
             , $ = layui.jquery;
+
+
         table.render({
             elem: '#demo'
-            , cellMinWidth: 80
+            , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , url: 'userList2.action'
             , toolbar: '#toolbarDemo',
             page: true,
             cols:
                 [[
                     {type: 'checkbox', fixed: 'left'},
-                    {field: 'user_id', title: 'ID', sort: true}
+                    {field: 'user_id', title: 'ID', width: 80, sort: true}
                     , {field: 'user_name', title: '用户名'}
-                    , {field: 'user_age', title: '年龄', sort: true}
+                    , {field: 'user_age', title: '年龄', width: 80, sort: true}
                     , {field: 'user_major', title: '专业'}
                     , {field: 'address', title: '地址'},
                     {
@@ -150,18 +157,53 @@
 
         });
 
+//监听复选框选择
+        $(".delAll_btn").on("click", function () {
+
+            var checkStauts = table.checkStatus("demo"),
+                data = checkStauts.data,
+                user_ids = "";
+
+            if (data.length > 0) {
+                for (var i in data) {
+                    user_ids += data[i].user_id + ","
+                }
+                console.log(user_ids);
+                layer.confirm("确定删除选中的记录么？", {icon: 3, ttial: '提示信息'}, function (idenx) {
+                    $.post("delete.action", {"user_ids": user_ids}, function (data) {
+                        WWWWW
+                        table.reload('testReload', {});
+                        layer.close(index);
+                    })
+
+                })
+            }
+        })
         //监听行工具事件
         table.on('tool(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
             var data = obj.data //获得当前行数据
                 , layEvent = obj.event; //获得 lay-event 对应的值
+            if (layEvent === 'upload') {
+                //执行实例
+                var uploadInst = upload.render({
+                    elem: '#test1' //绑定元素
+                    , url: '/upload/' //上传接口
+                    , done: function (res) {
+                        //上传完毕回调
+                    }
+                    , error: function () {
+                        //请求异常回调
+                    }
+                });
+            }
             if (layEvent === 'detail') {
                 //弹出即全屏
-                var index = layer.open({
+                var index1 = layer.open({
                     type: 1,
                     content: $('#detailForm').html(),
                     maxmin: true
                 });
-                layer.full(index);
+                layer.full(index1);
                 $("#dname").html(data.user_name);
                 $("#dage").html(data.user_age);
                 $("#dmajor").html(data.user_major);
@@ -172,7 +214,7 @@
                 layer.confirm('真的删除行么', function (index) {
                     $.ajax({
                         url: "delete.action",
-                        data: {"user_id": data.user_id},
+                        data: {"user_ids": data.user_id},
                         success: function (flag) {
                             if (flag == 1) {
                                 obj.del(); //删除对应行（tr）的DOM结构
@@ -185,11 +227,11 @@
 
                         }
                     })
-                    layer.close(index);
+
                     //向服务端发送删除指令
                 });
             } else if (layEvent === 'edit') {
-                layer.open({ //打开页面
+                var index2 = layer.open({ //打开页面
                     title: "编辑用户",
                     type: 1,
                     content: $('#updatepage').html(),
@@ -225,36 +267,105 @@
         });
 
 
-        $('#btn-add').on('click', function () {
+        table.on('toolbar(test)', function (obj) {
+                var checkStatus = table.checkStatus(obj.config.id);
+                switch (obj.event) {
+                    case 'add':
+                        var w = ($(window).width() * 0.7);
+                        var h = ($(window).height() - 50);
+                        var index3 = layer.open({
+                            resize: true,
+                            title: '添加记录',
+                            shadeClose: true,
+                            area: [w + 'px', h + 'px'],
+                            type: 2,
+                            content: 'addUserPage.action',
+                            success: function (layero, index) {
+                                var body = layer.getChildFrame('body', index);
+                                body.find('#content').append(editor.txt.html());
+                            }
+                        });
+                        layer.full(index3);
+                        break;
+                    case 'delete':
 
-            var index = layer.open({
-                title: "添加用户",
-                type: 1,
-                content: $('#updatepage').html(),
-                area: ['450px', '480px'],
-                closeBtn: 1,
-                maxmin: true
+                        var data = checkStatus.data,
+                            user_ids = "";
+
+                        if (data.length > 0) {
+                            for (var i in data) {
+
+                                user_ids += data[i].user_id + ","
+                                layer.msg(user_ids);
+                            }
+
+                            console.log(user_ids);
+                            layer.confirm('真的删除行么', function (index) {
+                                $.ajax({
+                                    url: "delete.action",
+                                    data: {"user_ids": user_ids},
+                                    success: function (flag) {
+                                        if (flag > 0) {
+                                            layer.msg("删除成功", {icon: 6});
+                                            layer.closeAll();
+                                            table.reload('testReload', {});
+                                        } else {
+                                            layer.msg("删除 失败", {icon: 6});
+                                        }
+
+                                    }
+                                })
+
+                            })
+                        }
+                        break;
+                    case
+                    'update'
+                    :
+                        layer.msg('编辑');
+                        break;
+                }
+                ;
+            }
+        );
+
+        form.on('submit(add-submit_btn)', function (data) {
+
+            $.post('addUser.action', data.field, function (flag) {
+
+                if (flag == 1) {
+
+                    layer.closeAll();
+                    table.reload('testReload', {});
+                    layer.msg("添加成功", {icon: 6});
+                } else {
+                    layer.msg("添加失败", {icon: 6});
+                }
             })
-            layer.full(index);
-            form.render();
-            form.on('submit(update-submit_btn)', function (data) {
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        })
 
-                $.post('addUser.action', data.field, function (flag) {
 
-                    if (flag == 1) {
+        form.on('submit(add-submit_btn)', function (data) {
 
-                        layer.closeAll();
-                        table.reload('testReload', {});
-                        layer.msg("添加成功", {icon: 6});
-                    } else {
-                        layer.msg("添加失败", {icon: 6});
-                    }
-                })
-                return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+            $.post('addUser.action', data.field, function (flag) {
+
+                if (flag == 1) {
+
+                    layer.closeAll();
+                    table.reload('testReload', {});
+                    layer.msg("添加成功", {icon: 6});
+                } else {
+                    layer.msg("添加失败", {icon: 6});
+                }
             })
-        });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        })
+
 
     });
+
+
 </script>
 
 

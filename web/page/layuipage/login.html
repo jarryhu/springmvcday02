@@ -61,7 +61,6 @@
         // form.render();//渲染
 
         form.on('submit(demo1)', function (data) {
-            console.log("1111111");
             $.ajax(
                 {
                     url: "loginLayui.action",
@@ -71,7 +70,7 @@
                     contentType: "application/json",
                     success: function (d) {
                         if (d == "success") {
-                            location.href = "selectLayUitablePage.action";
+                            location.href = "main.action";
                         } else {
                             layer.msg("用户名密码错误")
                         }

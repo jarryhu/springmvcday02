@@ -14,6 +14,21 @@
         <result property="headpath" column="headpath"></result>
     </resultMap>
 
+    <insert id="userAdd" useGeneratedKeys="true" keyProperty="user_id" parameterType="user">
+        insert into user value(null,#{user_name},#{user_age},#{user_major},
+        #{user_password},#{address},#{headpath})
+    </insert>
+
+
+    <delete id="deleteUser" parameterType="integer">
+        delete from user where id=#{id}
+    </delete>
+
+    <update id="updateUserinfo" parameterType="user">
+        update user set name=#{user_name},major=#{user_major},age=#{user_age},address=#{address}
+               where id=#{user_id}
+    </update>
+
 
     <select id="search" parameterType="user" resultMap="usermap">
         <include refid="s"/>
@@ -46,6 +61,11 @@
     <update id="updatehead" parameterType="user">
             update user set headpath=#{headpath} where id=#{user_id}
 </update>
+
+    <update id="updateuser" parameterType="user">
+            update user set name=#{user_name},address=#{address},age=#{user_age},major=#{user_major} where id=#{user_id}
+</update>
+
 
     <select id="searchByWhere" parameterType="user" resultMap="usermap">
         <include refid="s"/>

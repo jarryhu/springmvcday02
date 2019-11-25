@@ -1,21 +1,27 @@
 package controller;
 
 import net.sf.json.JSONArray;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import pojo.User;
+import service.BookDao;
 import service.UserDao;
 import tool.TooL;
 import util.PageUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Controller
 public class UserController {
@@ -23,11 +29,71 @@ public class UserController {
     @Autowired
     UserDao userDao;
 
+
     @RequestMapping("/checkUserName.action")
     @ResponseBody
     public String checkUsername(String username) {
         int i = userDao.checkUserName(username);
         return (i > 0) ? "用户名已经被占用" : "用户名可用";
+    }
+
+    @RequestMapping("userheadUpload.action")
+    public String userheadUpload() {
+        return "upload";
+    }
+
+    @RequestMapping("uploadHead.action")
+    @ResponseBody
+    public Map<String, Object> uploadHead(MultipartFile file, int id) throws IOException {
+        String filename = UUID.randomUUID().toString().replaceAll("-", "");
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        filename = filename + "." + extension;
+        String path = "D:\\upload";
+        file.transferTo(new File("D:\\upload\\" + filename));
+        Map<String, Object> map = new HashMap<>();
+        User user = new User();
+        user.setUser_id(id);
+        user.setHeadpath(filename);
+        userDao.updatehead(user);
+        File dir = new File(path, filename);
+        if (!dir.exists()) {
+            map.put("msg", "上传失败");
+            map.put("code", 1);
+
+        } else {
+
+            dir.mkdirs();
+            map.put("msg", "上传成功");
+            map.put("code", 0);
+
+        }
+        return map;
+
+    }
+
+    @RequestMapping("delete.action")
+    @ResponseBody
+    public int delete(String user_ids) {
+
+        boolean b = user_ids.endsWith(",");
+        if (b) {
+            user_ids = user_ids.substring(0, user_ids.length() - 1);
+        }
+        String[] ids = user_ids.split(",");
+
+        int result = 0;
+        for (String id :
+                ids) {
+            result = userDao.deleteUser(Integer.parseInt(id));
+        }
+        return result;
+    }
+
+    @RequestMapping("addUser.action")
+    @ResponseBody
+    public int addUser(User user) {
+        int r = userDao.userAdd(user);
+        return r;
     }
 
 
@@ -37,6 +103,7 @@ public class UserController {
         List<User> users = userDao.search(user);
         return users;
     }
+
 
     @Autowired
     HttpServletRequest request;
@@ -56,24 +123,30 @@ public class UserController {
         }
     }
 
+    @RequestMapping("addUserPage.action")
+
+    public String addUserPage() {
+        return "adduser";
+    }
+
 
     @RequestMapping("userListpage1.action")
 
     public String userList() {
-        return "/layuipage/list.html";
+        return "list";
     }
 
     @RequestMapping("userListpage2.action")
 
     public String userList2() {
-        return "/layuipage/list2.html";
+        return "list2";
     }
 
 
     @RequestMapping("main.action")
 
     public String mainPage() {
-        return "/layuipage/admin.html";
+        return "admin";
     }
 
 
@@ -99,7 +172,7 @@ public class UserController {
     @RequestMapping("selectLayUitablePage.action")
 
     public String selectLayUitablePage() {
-        return "tableDemo";
+        return "list3";
     }
 
 
@@ -109,6 +182,14 @@ public class UserController {
 
         List<User> users = userDao.selectLayUitable();
         return TooL.testLayui(users, 0, 0);
+    }
+
+
+    @RequestMapping("updateUserInfo.action")
+    @ResponseBody
+    public int updateuser(User user) {
+        return userDao.updateuser(user);
+
     }
 
 

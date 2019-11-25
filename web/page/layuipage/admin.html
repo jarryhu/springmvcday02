@@ -15,7 +15,9 @@
         <ul class="layui-nav layui-layout-left">
             <li class="layui-nav-item"><a href="">控制台</a></li>
             <li class="layui-nav-item"><a href="">商品管理</a></li>
-            <li class="layui-nav-item"><a href="">用户</a></li>
+            <li class="layui-nav-item"><a href="javascript:;" class="site-demo-active1"
+                                          data-url="/springmvcday02/userheadUpload.action">用户</a>
+            </li>
             <li class="layui-nav-item">
                 <a href="javascript:;">其它系统</a>
                 <dl class="layui-nav-child">
@@ -52,7 +54,7 @@
                                data-url="/springmvcday02/userListpage1.action"
                                class="site-demo-active" data-type="tabAdd">管理员列表</a></dd>
                         <dd><a href="javascript:;" data-id="2" data-title="用户列表"
-                               data-url="/springmvcday02/userListpage2.action"
+                               data-url="/springmvcday02/selectLayUitablePage.action"
                                class="site-demo-active" data-type="tabAdd">用户列表</a></dd>
                     </dl>
                 </li>
@@ -85,19 +87,17 @@
         var $ = layui.$;
         // 配置tab实践在下面无法获取到菜单元素
         $('.site-demo-active').on('click', function () {
-            var attribute = $('.site-demo-active').attr("data-url");
-            console.log(attribute);
+            var $this = $(this);
+            var attr = $this.attr("data-url");
+            console.log(attr)
             var main = $("#main");
-            main.attr('src', attribute);
+            main.attr('src', attr);
 
 
-            var a = $('.site-demo-active');
-            var main = $("#main");
-            for (var i = 0; i < a.length; i++) {
-                var attr = $(this)[i].attr("data-url");
-                main.attr('src', attr);
-            }
-
+        })
+        $('.site-demo-active1').on("click", function () {
+            var attr1 = $(this).attr("data-url");
+            $("#main").attr('src', attr1);
         })
     });
 
