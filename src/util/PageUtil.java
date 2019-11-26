@@ -1,16 +1,19 @@
 package util;
 
 import net.sf.json.JSONArray;
+import pojo.User;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public  class  PageUtil {
-    public static HashMap getPageParamer(int page, int limit) {
+public class PageUtil {
+    public static HashMap getPageParamer(User user, int page, int limit) {
         int pagestart = (page - 1) * limit;
         HashMap map = new HashMap();
         map.put("pagestart", pagestart);
         map.put("pagesize", limit);
+        map.put("user_name", user.getUser_name());
+        map.put("user_major", user.getUser_major());
         return map;
     }
 

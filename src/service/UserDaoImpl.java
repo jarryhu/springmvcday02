@@ -71,6 +71,7 @@ public class UserDaoImpl implements UserDao {
         return userMapper.updateuser(user);
     }
 
+
     @Override
     public int updateUserinfo(User user) {
         return userMapper.updateUserinfo(user);

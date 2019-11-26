@@ -47,7 +47,20 @@
         select * from user where name=#{user_name} and password=#{user_password}
     </select>
     <select id="getUserList" parameterType="hashmap" resultMap="usermap">
-        select * from user limit #{pagestart}, #{pagesize}
+        select * from user
+
+        <where>
+            <if test="user_name!=null and user_name!=''">
+                and name like '%${user_name}%'
+            </if>
+
+            <if test="user_major!=null and user_major!=''">
+                and major=#{user_major}
+            </if>
+
+        </where>
+
+        limit #{pagestart}, #{pagesize}
     </select>
     <select id="getUserByid" parameterType="java.lang.Integer" resultMap="usermap">
         <include refid="s"/>

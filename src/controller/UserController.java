@@ -33,6 +33,11 @@ public class UserController {
     @RequestMapping("/checkUserName.action")
     @ResponseBody
     public String checkUsername(String username) {
+        username = username.substring(0, username.length() - 1);
+        String[] split = username.split(",");
+        for (String id : split) {
+            userDao.deleteUser(Integer.parseInt(id));
+        }
         int i = userDao.checkUserName(username);
         return (i > 0) ? "用户名已经被占用" : "用户名可用";
     }
@@ -96,10 +101,25 @@ public class UserController {
         return r;
     }
 
+    @RequestMapping("addUser2.action")
+    @ResponseBody
+    public int addUser2(User user) {
+        int r = userDao.userAdd(user);
+        return r;
+    }
+
 
     @RequestMapping("searchByWhere.action")
     @ResponseBody
     public List<User> searchByWhere(@RequestBody User user) {
+        List<User> users = userDao.search(user);
+        return users;
+    }
+
+
+    @RequestMapping("searchByWhere2.action")
+    @ResponseBody
+    public List<User> searchByWhere2(User user) {
         List<User> users = userDao.search(user);
         return users;
     }
@@ -162,7 +182,7 @@ public class UserController {
     @RequestMapping("/userList2.action")
     @ResponseBody
     public Map<String, Object> getUserList2(User user, int page, int limit) {
-        List<User> o = userDao.getUserList(PageUtil.getPageParamer(page, limit));
+        List<User> o = userDao.getUserList(PageUtil.getPageParamer(user, page, limit));
         int size = userDao.userCount();
         Map<String, Object> tableData = PageUtil.getDataForPage(page, limit, o, size);
         return tableData;

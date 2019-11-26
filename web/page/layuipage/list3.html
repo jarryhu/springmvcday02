@@ -10,6 +10,17 @@
     <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
 </head>
 <body>
+<div class="demoTable" style="margin-top: 20px">
+    &nbsp; 姓名：
+    <div class="layui-inline">
+        <input class="layui-input" name="id" id="searchName" autocomplete="off">
+    </div>
+    专业：
+    <div class="layui-inline">
+        <input class="layui-input" name="id" id="searchMajor" autocomplete="off">
+    </div>
+    <button class="layui-btn" id="searchBtn" data-type="reload">搜索</button>
+</div>
 <script src="/springmvcday02/page/jquery/jquery-3.4.1.min.js"></script>
 <table class="layui-hide" id="demo" lay-filter="test"></table>
 
@@ -58,6 +69,12 @@
         <label class="layui-form-label"
                id="dpassword"
         />
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">头像</label>
+        <img class="layui-form-img" id="head" src="" style="width: 100px;height: 100px"/>
+
     </div>
 </script>
 
@@ -154,31 +171,46 @@
             id: 'testReload',
             limits: [5, 15, 20, 25],
             limit: 5,
+            done: function (res, curr, count) {  //回调函数解决最后一页删除跳转到前一页
+                if (res.data.length == 0) {
+                    table.reload('testReload', {
+                        page: {
+                            curr: curr - 1
+                        }
+                    });
+                }
+            }
+
 
         });
+        $('#searchBtn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
 
-//监听复选框选择
-        $(".delAll_btn").on("click", function () {
 
-            var checkStauts = table.checkStatus("demo"),
-                data = checkStauts.data,
-                user_ids = "";
+        // 点击获取数据
+        var active = {
+            reload: function () {
 
-            if (data.length > 0) {
-                for (var i in data) {
-                    user_ids += data[i].user_id + ","
-                }
-                console.log(user_ids);
-                layer.confirm("确定删除选中的记录么？", {icon: 3, ttial: '提示信息'}, function (idenx) {
-                    $.post("delete.action", {"user_ids": user_ids}, function (data) {
-                        WWWWW
-                        table.reload('testReload', {});
-                        layer.close(index);
-                    })
+                var searchName = $('#searchName').val();
+                var searchMajor = $('#searchMajor').val();
+                var index = layer.msg('查询中，请稍候...', {icon: 16, time: false, shade: 0});
+                setTimeout(function () {
+                    table.reload('testReload', { //表格的id
+                        url: 'userList2.action',
+                        where: {
+                            'user_name': $.trim(searchName),
+                            'user_major': $.trim(searchMajor)
+                        }
+                    });
 
-                })
-            }
-        })
+                }, 800);
+                layer.close(index);
+            },
+        };
+
+
         //监听行工具事件
         table.on('tool(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
             var data = obj.data //获得当前行数据
@@ -198,6 +230,7 @@
             }
             if (layEvent === 'detail') {
                 //弹出即全屏
+
                 var index1 = layer.open({
                     type: 1,
                     content: $('#detailForm').html(),
@@ -207,8 +240,8 @@
                 $("#dname").html(data.user_name);
                 $("#dage").html(data.user_age);
                 $("#dmajor").html(data.user_major);
-                $("#dpassword").html(data.user_password)
-
+                $("#head").attr("src", "/pic/" + data.headpath)
+                console.log(("#head").attr("src"));
 
             } else if (layEvent === 'del') {
                 layer.confirm('真的删除行么', function (index) {
@@ -217,7 +250,7 @@
                         data: {"user_ids": data.user_id},
                         success: function (flag) {
                             if (flag == 1) {
-                                obj.del(); //删除对应行（tr）的DOM结构
+
                                 layer.msg("删除成功", {icon: 6});
                                 layer.closeAll();
                                 table.reload('testReload', {});
@@ -288,17 +321,13 @@
                         layer.full(index3);
                         break;
                     case 'delete':
-
                         var data = checkStatus.data,
                             user_ids = "";
-
                         if (data.length > 0) {
                             for (var i in data) {
-
                                 user_ids += data[i].user_id + ","
-                                layer.msg(user_ids);
+                                console.log(user_ids);
                             }
-
                             console.log(user_ids);
                             layer.confirm('真的删除行么', function (index) {
                                 $.ajax({
@@ -307,7 +336,7 @@
                                     success: function (flag) {
                                         if (flag > 0) {
                                             layer.msg("删除成功", {icon: 6});
-                                            layer.closeAll();
+                                            //layer.closeAll();
                                             table.reload('testReload', {});
                                         } else {
                                             layer.msg("删除 失败", {icon: 6});
@@ -320,9 +349,23 @@
                         }
                         break;
                     case
-                    'update'
-                    :
-                        layer.msg('编辑');
+                    'update':
+                        var w = ($(window).width() * 0.7);
+                        var h = ($(window).height() - 50);
+                        var index3 = layer.open({
+                            resize: true,
+                            title: '添加记录',
+                            shadeClose: true,
+                            area: [w + 'px', h + 'px'],
+                            type: 2,
+                            content: 'page/layuipage/adduser2.html',
+                            success: function (layero, index) {
+                                var body = layer.getChildFrame('body', index);
+                                body.find('#content').append(editor.txt.html());
+                            }
+                        });
+
+
                         break;
                 }
                 ;
@@ -351,7 +394,6 @@
             $.post('addUser.action', data.field, function (flag) {
 
                 if (flag == 1) {
-
                     layer.closeAll();
                     table.reload('testReload', {});
                     layer.msg("添加成功", {icon: 6});
@@ -363,7 +405,8 @@
         })
 
 
-    });
+    })
+    ;
 
 
 </script>

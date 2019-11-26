@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>layout 后台大布局 - Layui</title>
+    <link rel="stylesheet" href="/springmvcday02/page/layui/css/layui.css" media="all">
+</head>
+<body>
+<script src="/springmvcday02/page/layui/layui.all.js"></script>
+<form class="layui-form" lay-filter="update-form">
+    <div class="layui-input-block ">
+        <input type="hidden" name="user_id"
+               id="id">
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">姓名</label>
+        <div class="layui-input-block ">
+            <input type="text" name="user_name"
+                   id="name"
+                   required lay-verify="required" class="layui-input" style="width: 200px"
+                   placeholder="请输入姓名">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">年龄</label>
+        <div class="layui-input-block ">
+
+            <input type="text" name="user_age" class="layui-input" style="width: 200px"
+                   id="age"
+                   required lay-verify="required"
+                   placeholder="请输入姓名">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">专业</label>
+        <div class="layui-input-block ">
+            <input type="text" name="user_major" class="layui-input" style="width: 200px"
+                   id="major"
+                   required lay-verify="required">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">地址</label>
+        <div class="layui-input-block ">
+            <input type="text" name="address" class="layui-input" style="width: 200px"
+                   id="address"
+                   required lay-verify="required"
+                   placeholder="地址">
+        </div>
+    </div>
+    <div class="layui-form-item" style="margin-top:40px">
+        <div class="layui-input-block">
+            <button class="layui-btn  layui-btn-submit " lay-submit=""
+                    lay-filter="add-submit_btn">确认修改
+            </button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+</body>
+<script>
+    layui.use(['form', "jquery"], function () {
+        var form = layui.form;
+        var $ = layui.$;
+        var index = parent.layer.getFrameIndex(window.name);
+        form.on("submit(add-submit_btn)", function (data) {
+
+            console.log(data.field);
+            $.ajax({
+                url: '/springmvcday02/addUser2.action',
+                type: "post",
+                data: data.field,
+                dataType: "json",
+                //   contentType: "application/json", 传递值得类型,
+                success: function (d) {
+                    if (d > 0) {
+                        layer.msg('添加成功');
+                        //layui 关闭当前窗口，刷新父级页面
+                        parent.layer.close(index);//关闭当前页
+                        parent.location.reload();
+                    }
+                }
+            })
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        })
+
+    });
+</script>
+</html>
