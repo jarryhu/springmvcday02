@@ -67,6 +67,12 @@ public class User {
         this.user_password = user_password;
     }
 
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
     @Override
     public String toString() {
         return "User{" +

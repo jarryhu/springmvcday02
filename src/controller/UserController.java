@@ -54,14 +54,32 @@ public class UserController {
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
         filename = filename + "." + extension;
         String path = "D:\\upload";
-        file.transferTo(new File("D:\\upload\\" + filename));
         Map<String, Object> map = new HashMap<>();
         User user = new User();
         user.setUser_id(id);
         user.setHeadpath(filename);
-        userDao.updatehead(user);
+        int update = userDao.updatehead(user);
+        if (update > 0) {
+            file.transferTo(new File("D:\\upload\\" + filename));
+        }
+
         File dir = new File(path, filename);
-        if (!dir.exists()) {
+
+        if (dir.exists()) {
+            update = userDao.updatehead(user);
+        }
+        if (dir.exists() && update < 1) {
+            dir.delete();
+            map.put("msg", "上传失败");
+            map.put("code", 1);
+        } else if (!dir.exists() && update > 0) {
+            user.setHeadpath(null);
+            userDao.updatehead(user);
+            dir.delete();
+            map.put("msg", "上传失败");
+            map.put("code", 1);
+        } else if (!dir.exists() && update < 1) {
+            dir.delete();
             map.put("msg", "上传失败");
             map.put("code", 1);
 
@@ -130,17 +148,21 @@ public class UserController {
 
     @RequestMapping("/loginLayui.action")
     @ResponseBody
-    public String login(@RequestBody User user) {
+    public Map<String, Object> login(@RequestBody User user) {
+        Map<String, Object> map = new HashMap<>();
         HttpSession session = request.getSession();
         User loginUser = userDao.Login(user);
         if (loginUser != null) {
-            //重定向
+            map.put("code", 0);
+            map.put("user", loginUser);
             session.setAttribute("user", loginUser);
-            return "success";
         } else {
-
-            return "fail";
+            map.put("code", 1);
         }
+
+        return map;
+
+
     }
 
     @RequestMapping("addUserPage.action")
@@ -183,7 +205,7 @@ public class UserController {
     @ResponseBody
     public Map<String, Object> getUserList2(User user, int page, int limit) {
         List<User> o = userDao.getUserList(PageUtil.getPageParamer(user, page, limit));
-        int size = userDao.userCount();
+        int size = userDao.userCount(user);
         Map<String, Object> tableData = PageUtil.getDataForPage(page, limit, o, size);
         return tableData;
     }
@@ -215,13 +237,13 @@ public class UserController {
 
     @RequestMapping("selectLayUitable_Page.action")
     @ResponseBody
-    public Map<String, Object> selectLayUitable_Page(int page, int limit) {
+    public Map<String, Object> selectLayUitable_Page(User user, int page, int limit) {
         HashMap<String, Integer> map = new HashMap<>();
         int pageStart = (page - 1) * limit;
         map.put("pagestart", pageStart);
         map.put("size", limit);
         List<User> users = userDao.selectpage(map);
-        Integer pagecount = userDao.userCount();
+        Integer pagecount = userDao.userCount(user);
         Map<String, Object> returnTable = TooL.testLayui(users, page, limit);
         returnTable.put("count", pagecount);
         return returnTable;

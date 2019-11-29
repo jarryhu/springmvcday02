@@ -23,6 +23,15 @@
         </div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label">密码</label>
+        <div class="layui-input-block ">
+            <input type="password" name="user_password"
+                   id="user_password"
+                   required lay-verify="required" class="layui-input" style="width: 200px"
+                   placeholder="请输入密码">
+        </div>
+    </div>
+    <div class="layui-form-item">
         <label class="layui-form-label">年龄</label>
         <div class="layui-input-block ">
 
@@ -96,6 +105,8 @@
                     $("#uploadImg").trigger("click");
 
                     layer.msg("添加成功", {icon: 6});
+                    layer.close(layer.index);
+                    parent.location.reload();
                 } else {
                     layer.msg("添加失败", {icon: 6});
                 }

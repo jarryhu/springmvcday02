@@ -52,8 +52,8 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Integer userCount() {
-        return userMapper.userCount();
+    public Integer userCount(User user) {
+        return userMapper.userCount(user);
     }
 
     @Override

@@ -48,8 +48,8 @@
         //自定义验证规则
         form.verify({
             name: function (value) {
-                if (value.length < 5) {
-                    return '标题至少得5个字符啊';
+                if (value.length < 4) {
+                    return '标题至少得4个字符啊';
                 }
             }
             , password: [
@@ -69,7 +69,8 @@
                     type: "post",
                     contentType: "application/json",
                     success: function (d) {
-                        if (d == "success") {
+                        if (d.code == 0) {
+                            window.sessionStorage.setItem("user", d.user.user_name);
                             location.href = "main.action";
                         } else {
                             layer.msg("用户名密码错误")

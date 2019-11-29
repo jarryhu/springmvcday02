@@ -25,7 +25,7 @@
     </delete>
 
     <update id="updateUserinfo" parameterType="user">
-        update user set name=#{user_name},major=#{user_major},age=#{user_age},address=#{address}
+        update user set name=#{user_name},major=#{user_major},password=#{user_password},age=#{user_age},address=#{address}
                where id=#{user_id}
     </update>
 
@@ -76,7 +76,7 @@
 </update>
 
     <update id="updateuser" parameterType="user">
-            update user set name=#{user_name},address=#{address},age=#{user_age},major=#{user_major} where id=#{user_id}
+            update user set name=#{user_name},address=#{address},password=#{user_password},age=#{user_age},major=#{user_major} where id=#{user_id}
 </update>
 
 
@@ -94,7 +94,7 @@
 
 
     <select id="selectLayUitable" resultMap="usermap">
-        select  * from user;
+        select  * from user
     </select>
 
     <sql id="s">
@@ -102,8 +102,16 @@
     </sql>
 
 
-    <select id="userCount" resultType="integer">
+    <select id="userCount" parameterType="user" resultType="integer">
         select count(*) from user
+        <where>
+            <if test="user_name!=null and user_name!=''">
+                and name like "%${user_name}%"
+            </if>
+            <if test="user_major!=null and user_major!=''">
+                and major =#{user_major}
+            </if>
+        </where>
     </select>
 
 

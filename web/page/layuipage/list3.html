@@ -94,6 +94,16 @@
                        placeholder="请输入姓名">
             </div>
         </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码</label>
+            <div class="layui-input-block ">
+                <input type="password" name="user_password"
+                       id="user_password"
+                       required lay-verify="required" class="layui-input" style="width: 200px"
+                       placeholder="请输入密码">
+            </div>
+        </div>
         <div class="layui-form-item">
             <label class="layui-form-label">年龄</label>
             <div class="layui-input-block ">
@@ -121,6 +131,27 @@
                        placeholder="地址">
             </div>
         </div>
+
+        <div class="layui-form-item" style="margin-top:5px;width:500px;">
+            <label class="layui-form-label">头像</label>
+            <div class="layui-upload">
+                <div class="layui-upload-list">
+                    <div class="upload-img"></div>
+                    <p id="demoText"></p>
+                    <img style="width: 100px;height:100px; border-radius:50% " id="preview">
+
+                    <button type="button" class="layui-btn layui-btn-img" id="test1"
+                            id="test1">上传头像
+
+                    </button>
+                    <button type="button" class="btn btn-primary" id="uploadImg"
+                            style="display:none">
+                        提交图片
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <div class="layui-form-item" style="margin-top:40px">
             <div class="layui-input-block">
                 <button class="layui-btn  layui-btn-submit " lay-submit=""
@@ -172,7 +203,7 @@
             limits: [5, 15, 20, 25],
             limit: 5,
             done: function (res, curr, count) {  //回调函数解决最后一页删除跳转到前一页
-                if (res.data.length == 0) {
+                if (res.data.length == 0 && count > 0) {
                     table.reload('testReload', {
                         page: {
                             curr: curr - 1
@@ -183,6 +214,8 @@
 
 
         });
+
+
         $('#searchBtn').on('click', function () {
             var type = $(this).data('type');
             active[type] ? active[type].call(this) : '';
@@ -196,6 +229,7 @@
                 var searchName = $('#searchName').val();
                 var searchMajor = $('#searchMajor').val();
                 var index = layer.msg('查询中，请稍候...', {icon: 16, time: false, shade: 0});
+
                 setTimeout(function () {
                     table.reload('testReload', { //表格的id
                         url: 'userList2.action',
@@ -206,6 +240,8 @@
                     });
 
                 }, 800);
+
+
                 layer.close(index);
             },
         };
@@ -279,9 +315,43 @@
                         user_age: obj.data.user_age,
                         user_major: obj.data.user_major,
                         user_password: obj.data.user_password,
-                        address: obj.data.address
+                        address: obj.data.address,
+
                     }
                 );
+                $("#preview").attr("src", "/pic/" + obj.data.headpath);
+                //执行实例
+                var uploadInst = upload.render({
+                    elem: '#test1' //绑定元素
+                    , url: 'uploadHead.action' //上传接口
+                    , auto: false
+                    , data: {id: +obj.data.user_id}
+                    , bindAction: '#uploadImg'
+
+                    //选择文件后的回调
+                    , choose: function (obj) {
+                        obj.preview(function (index, file, result) {
+                            $('#preview').attr('src', result);
+                        })
+                    },
+
+                    done: function (res) {
+                        //如果上传失败
+                        if (res.code > 0) {
+                            return layer.msg('上传失败');
+                        }
+                        //上传成功
+                        if (res.code == 0) {
+                            //layui 关闭当前窗口，刷新父级页面
+                            // layer.close(layer.index);
+                            // parent.location.reload();
+                            //  $('.layui-btn-img').text("重新上传");
+                            //  return layer.msg('上传成功', {time: 700});
+                        }
+                    }
+                });
+
+                $("#address").attr("src", "/pic/" + obj.data.headpath)
             }
         });
         form.on('submit(update-submit_btn)', function (data) {
@@ -290,6 +360,7 @@
 
                 if (flag == 1) {
                     layer.msg("修改成功", {icon: 6});
+                    $("#uploadImg").trigger("click");
                     layer.closeAll();
                     table.reload('testReload', {});
                 } else {
@@ -350,49 +421,14 @@
                         break;
                     case
                     'update':
-                        var w = ($(window).width() * 0.7);
-                        var h = ($(window).height() - 50);
-                        var index3 = layer.open({
-                            resize: true,
-                            title: '添加记录',
-                            shadeClose: true,
-                            area: [w + 'px', h + 'px'],
-                            type: 2,
-                            content: 'page/layuipage/adduser2.html',
-                            success: function (layero, index) {
-                                var body = layer.getChildFrame('body', index);
-                                body.find('#content').append(editor.txt.html());
-                            }
-                        });
-
 
                         break;
                 }
                 ;
             }
         );
-
         form.on('submit(add-submit_btn)', function (data) {
-
             $.post('addUser.action', data.field, function (flag) {
-
-                if (flag == 1) {
-
-                    layer.closeAll();
-                    table.reload('testReload', {});
-                    layer.msg("添加成功", {icon: 6});
-                } else {
-                    layer.msg("添加失败", {icon: 6});
-                }
-            })
-            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
-        })
-
-
-        form.on('submit(add-submit_btn)', function (data) {
-
-            $.post('addUser.action', data.field, function (flag) {
-
                 if (flag == 1) {
                     layer.closeAll();
                     table.reload('testReload', {});
@@ -403,10 +439,7 @@
             })
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         })
-
-
-    })
-    ;
+    });
 
 
 </script>

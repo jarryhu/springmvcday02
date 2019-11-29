@@ -29,7 +29,7 @@ public interface UserDao {
 
     public List<User> search(User user);
 
-    public Integer userCount();
+    public Integer userCount(User user);
 
     public List<User> selectLayUitable();
 

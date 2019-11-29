@@ -21,12 +21,14 @@ public class PageUtil {
         Map<String, Object> tableData = new HashMap<String, Object>();
         //这是layui要求返回的json数据格式
         JSONArray data = JSONArray.fromObject(o);
+        tableData.put("data", data);
+       
         tableData.put("code", "0");
         tableData.put("msg", "");
         //将全部数据的条数作为count传给前台（一共多少条）
         tableData.put("count", size);
         //将分页后的数据返回（每页要显示的数据）
-        tableData.put("data", data);
+
         return tableData;
     }
 }
