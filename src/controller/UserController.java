@@ -43,7 +43,7 @@ public class UserController {
     }
 
     @RequestMapping("userheadUpload.action")
-    public String userheadUpload() {
+    public String userHeadUpload() {
         return "upload";
     }
 
