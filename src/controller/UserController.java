@@ -96,7 +96,7 @@ public class UserController {
 
     @RequestMapping("delete.action")
     @ResponseBody
-    public int delete(String user_ids) {
+    public int deleteUserByid(String user_ids) {
 
         boolean b = user_ids.endsWith(",");
         if (b) {
